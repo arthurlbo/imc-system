@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 
 import { Status } from "@/enums/status.enum";
 import { Profile } from "@/enums/profile.enum";
+import { UserToken } from "@/modules/auth/entity/user-token.entity";
 
 @Entity({
     name: "users",
@@ -38,4 +39,7 @@ export class User {
 
     @UpdateDateColumn({ name: "updated_at", type: "datetime" })
     updatedAt?: Date;
+
+    @OneToMany(() => UserToken, (token) => token.user)
+    tokens?: UserToken[];
 }
