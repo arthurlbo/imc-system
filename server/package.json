@@ -1,0 +1,41 @@
+{
+    "name": "imc-system-server",
+    "author": "https://github.com/arthurlbo",
+    "license": "MIT",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "tsx watch src/main.ts",
+        "typeorm:ts": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+        "migrate:create": "pnpm typeorm:ts migration:create ./typeorm/migrations/Migration",
+        "migrate:up": "pnpm typeorm:ts migration:run -d ./typeorm/data-source.ts",
+        "migrate:down": "pnpm typeorm:ts migration:revert -d ./typeorm/data-source.ts",
+        "clear:db": "pnpm typeorm:ts schema:drop -d ./typeorm/data-source.ts",
+        "commit": "git-cz"
+    },
+    "dependencies": {
+        "bcrypt": "^6.0.0",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "reflect-metadata": "^0.2.2",
+        "sqlite3": "^5.1.7",
+        "typeorm": "^0.3.24",
+        "zod": "^3.25.56"
+    },
+    "devDependencies": {
+        "@commitlint/config-conventional": "^19.8.1",
+        "@eslint/js": "^9.28.0",
+        "@types/node": "^22.15.30",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^9.28.0",
+        "globals": "^16.2.0",
+        "tsx": "^4.19.4",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.33.1"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    }
+}
