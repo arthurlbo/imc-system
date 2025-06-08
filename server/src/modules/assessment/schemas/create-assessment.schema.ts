@@ -6,4 +6,4 @@ export const createAssessmentSchema = z.object({
     studentId: z.string().uuid("Student ID must be a valid UUID."),
 });
 
-export type CreateAssessmentDTO = z.infer<typeof createAssessmentSchema>;
+export type CreateAssessment = z.infer<typeof createAssessmentSchema>;

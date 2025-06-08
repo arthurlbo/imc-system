@@ -7,14 +7,14 @@ import { Status } from "@/enums/status.enum";
 import { TIMEZONE } from "@/constants/timezone";
 import { BadRequestException, UnauthorizedException } from "@/commons/http-exception";
 
+import { UserReturn } from "@/modules/user/types";
 import { User } from "@/modules/user/entity/user.entity";
 import { UserService } from "@/modules/user/user.service";
 import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
 
-import { LoginResponse } from "./types";
-import { LoginDTO } from "./dto/login.dto";
-import { UpdateDTO } from "./dto/update.dto";
-import { RegisterDTO } from "./dto/register.dto";
+import { Login } from "./schemas/login.schema";
+import { Update } from "./schemas/update.schema";
+import { Register } from "./schemas/register.schema";
 
 export class AuthService {
     private readonly audience = "users";
@@ -114,7 +114,7 @@ export class AuthService {
         return { refreshToken: newRefreshToken };
     };
 
-    public register = async (data: RegisterDTO): Promise<{ refreshToken: string }> => {
+    public register = async (data: Register): Promise<{ refreshToken: string }> => {
         const newUser = await this.userService.createUser(data);
 
         const refreshToken = await this.generateRefreshToken(newUser.id);
@@ -122,9 +122,21 @@ export class AuthService {
         return { refreshToken };
     };
 
-    public login = async ({ user, password }: LoginDTO): Promise<LoginResponse> => {
-        const userInfo = await this.usersRepository.findOneBy({
-            user,
+    public login = async ({
+        user,
+        password,
+    }: Login): Promise<{
+        user: UserReturn;
+        refreshToken: string;
+    }> => {
+        const userInfo = await this.usersRepository.findOne({
+            where: { user },
+            relations: [
+                "appliedAssessments",
+                "receivedAssessments",
+                "receivedAssessments.evaluator",
+                "appliedAssessments.student",
+            ],
         });
 
         if (!userInfo || !(await bcrypt.compare(password, userInfo.password))) {
@@ -137,10 +149,12 @@ export class AuthService {
 
         const refreshToken = await this.generateRefreshToken(userInfo.id);
 
-        return { refreshToken, user: userInfo };
+        const formattedUserInfo = this.userService.formatUserToReturn(userInfo);
+
+        return { refreshToken, user: formattedUserInfo };
     };
 
-    public update = async (id: string, data: UpdateDTO, loggedUser: User): Promise<User> => {
+    public update = async (id: string, data: Update, loggedUser: User): Promise<UserReturn> => {
         if (loggedUser.id !== id) {
             throw new UnauthorizedException("You can only update your own account");
         }

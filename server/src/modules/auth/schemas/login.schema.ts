@@ -11,4 +11,4 @@ export const loginSchema = z.object({
         .max(255, { message: "Password must be at most 255 characters long" }),
 });
 
-export type LoginDTO = z.infer<typeof loginSchema>;
+export type Login = z.infer<typeof loginSchema>;

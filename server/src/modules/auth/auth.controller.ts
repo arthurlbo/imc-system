@@ -4,16 +4,15 @@ import { BadRequestException, UnauthorizedException } from "@/commons/http-excep
 
 import { User } from "@/modules/user/entity/user.entity";
 
-import { LoginResponse } from "./types";
 import { AuthService } from "./auth.service";
-import { loginSchema } from "./dto/login.dto";
-import { registerSchema } from "./dto/register.dto";
-import { UpdateDTO, updateSchema } from "./dto/update.dto";
+import { loginSchema } from "./schemas/login.schema";
+import { registerSchema } from "./schemas/register.schema";
+import { Update, updateSchema } from "./schemas/update.schema";
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    public refreshAccessToken = async (req: Req, res: Res): Promise<{ refreshToken: string }> => {
+    public refreshAccessToken = async (req: Req, res: Res) => {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
@@ -25,7 +24,7 @@ export class AuthController {
         return res.status(200).json({ data: tokens });
     };
 
-    public me = async (req: Req, res: Res): Promise<User> => {
+    public me = async (req: Req, res: Res) => {
         const user = req.user as User;
 
         if (!user) {
@@ -35,7 +34,7 @@ export class AuthController {
         return res.status(200).json({ data: user });
     };
 
-    public register = async (req: Req, res: Res): Promise<{ refreshToken: string }> => {
+    public register = async (req: Req, res: Res) => {
         const parsedData = registerSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -47,7 +46,7 @@ export class AuthController {
         return res.status(201).json({ data: token });
     };
 
-    public login = async (req: Req, res: Res): Promise<LoginResponse> => {
+    public login = async (req: Req, res: Res) => {
         const parsedData = loginSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -59,7 +58,7 @@ export class AuthController {
         return res.status(200).json({ data: loggedUser });
     };
 
-    public logout = async (req: Req, res: Res): Promise<{ success: boolean }> => {
+    public logout = async (req: Req, res: Res) => {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
@@ -71,7 +70,7 @@ export class AuthController {
         return res.status(200).json({ data: { success: true } });
     };
 
-    public update = async (req: Req, res: Res): Promise<User> => {
+    public update = async (req: Req, res: Res) => {
         const parsedData = updateSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -81,7 +80,7 @@ export class AuthController {
         const loggedUser = req.user as User;
         const { id } = req.params as { id: string };
 
-        const data = parsedData.data as UpdateDTO;
+        const data = parsedData.data as Update;
 
         const updatedUser = await this.authService.update(id, data, loggedUser);
 

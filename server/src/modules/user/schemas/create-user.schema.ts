@@ -20,4 +20,4 @@ export const createUserSchema = z.object({
     status: z.nativeEnum(Status, { message: "Invalid Status" }).default(Status.Active),
 });
 
-export type CreateUserDTO = z.infer<typeof createUserSchema>;
+export type CreateUser = z.infer<typeof createUserSchema>;

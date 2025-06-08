@@ -5,7 +5,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from "@/co
 
 import { User } from "./entity/user.entity";
 import { UserService } from "./user.service";
-import { createUserSchema } from "./dto/create-user.dto";
+import { createUserSchema } from "./schemas/create-user.schema";
 
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -14,7 +14,7 @@ export class UserController {
         return loggedUser.profile === Profile.Admin;
     };
 
-    public findAllUsers = async (req: Request, res: Response): Promise<Response> => {
+    public findAllUsers = async (req: Request, res: Response) => {
         const loggedUser = req.user as User;
 
         const users = await this.userService.findAllUsers(loggedUser);
@@ -22,7 +22,7 @@ export class UserController {
         return res.status(200).json({ data: users });
     };
 
-    public findOneUser = async (req: Request, res: Response): Promise<Response> => {
+    public findOneUser = async (req: Request, res: Response) => {
         const loggedUser = req.user as User;
 
         const { id } = req.params as { id: string };

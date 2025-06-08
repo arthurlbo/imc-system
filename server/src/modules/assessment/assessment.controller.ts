@@ -6,13 +6,13 @@ import { BadRequestException, ForbiddenException, NotFoundException } from "@/co
 import { User } from "@/modules/user/entity/user.entity";
 
 import { AssessmentService } from "./assessment.service";
-import { createAssessmentSchema } from "./dto/create-assessment.dto";
-import { updateAssessmentSchema } from "./dto/update-assessment.dto";
+import { createAssessmentSchema } from "./schemas/create-assessment.schema";
+import { updateAssessmentSchema } from "./schemas/update-assessment.schema";
 
 export class AssessmentController {
     constructor(private readonly assessmentService: AssessmentService) {}
 
-    public findAllAssessment = async (req: Request, res: Response): Promise<Response> => {
+    public findAllAssessment = async (req: Request, res: Response) => {
         const loggedUser = req.user as User;
 
         const assessments = await this.assessmentService.findAllAssessments(loggedUser);
@@ -20,7 +20,7 @@ export class AssessmentController {
         return res.status(200).json({ data: assessments });
     };
 
-    public findOneAssessment = async (req: Request, res: Response): Promise<Response> => {
+    public findOneAssessment = async (req: Request, res: Response) => {
         const loggedUser = req.user as User;
         const { id } = req.params as { id: string };
 
@@ -70,7 +70,7 @@ export class AssessmentController {
         const { id } = req.params;
 
         await this.assessmentService.deleteAssessment(id);
-        
+
         return res.status(200).json({ data: { success: true } });
     };
 }
