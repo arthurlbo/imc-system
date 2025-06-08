@@ -6,6 +6,7 @@ import { User } from "@/modules/user/entity/user.entity";
 
 import { AuthService } from "./auth.service";
 import { loginSchema } from "./dto/login.dto";
+import { updateSchema } from "./dto/update.dto";
 import { GeneratedTokens, LoginResponse } from "./types";
 
 export class AuthController {
@@ -70,16 +71,17 @@ export class AuthController {
     }
 
     public async update(req: Req, res: Res): Promise<User> {
-        const parsedData = loginSchema.safeParse(req.body);
+        const parsedData = updateSchema.safeParse(req.body);
 
         if (!parsedData.success) {
             throw new BadRequestException("Invalid update data", parsedData.error.format());
         }
 
         const loggedUser = req.user as User;
-        const { id } = req.params as { id: string };
 
-        const updatedUser = await this.authService.update(id, parsedData.data, loggedUser);
+        const data = parsedData.data;
+
+        const updatedUser = await this.authService.update(data.id, data, loggedUser);
 
         return res.status(200).json({ data: updatedUser });
     }
