@@ -3,9 +3,9 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Jo
 import { User } from "@/modules/user/entity/user.entity";
 
 @Entity({
-    name: "users_token",
+    name: "user_tokens",
 })
-export class UserToken {
+export class UserTokens {
     @PrimaryGeneratedColumn("uuid")
     id?: string;
 

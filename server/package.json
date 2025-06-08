@@ -14,7 +14,9 @@
     "dependencies": {
         "bcrypt": "^6.0.0",
         "cors": "^2.8.5",
+        "date-fns-tz": "^3.2.0",
         "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
         "reflect-metadata": "^0.2.2",
         "sqlite3": "^5.1.7",
         "typeorm": "^0.3.24",
@@ -23,6 +25,7 @@
     "devDependencies": {
         "@commitlint/config-conventional": "^19.8.1",
         "@eslint/js": "^9.28.0",
+        "@types/jsonwebtoken": "^9.0.9",
         "@types/node": "^22.15.30",
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",

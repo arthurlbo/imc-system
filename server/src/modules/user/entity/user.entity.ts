@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 
 import { Status } from "@/enums/status.enum";
 import { Profile } from "@/enums/profile.enum";
-import { UserToken } from "@/modules/auth/entity/user-token.entity";
+import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
 
 @Entity({
     name: "users",
@@ -40,6 +40,6 @@ export class User {
     @UpdateDateColumn({ name: "updated_at", type: "datetime" })
     updatedAt?: Date;
 
-    @OneToMany(() => UserToken, (token) => token.user)
-    tokens?: UserToken[];
+    @OneToMany(() => UserTokens, (token) => token.user)
+    tokens?: UserTokens[];
 }

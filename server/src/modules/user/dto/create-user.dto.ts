@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { Profile } from "@/enums/profile.enum";
 import { Status } from "@/enums/status.enum";
+import { Profile } from "@/enums/profile.enum";
 
 export const createUserSchema = z.object({
     name: z
@@ -16,8 +16,8 @@ export const createUserSchema = z.object({
         .string()
         .min(1, { message: "Password is required" })
         .max(255, { message: "Password must be at most 255 characters long" }),
-    profile: z.nativeEnum(Profile, { message: "Invalid Profile" }).optional().default(Profile.Student),
-    status: z.nativeEnum(Status, { message: "Invalid Status" }).optional().default(Status.Active),
+    profile: z.nativeEnum(Profile, { message: "Invalid Profile" }).default(Profile.Student),
+    status: z.nativeEnum(Status, { message: "Invalid Status" }).default(Status.Active),
 });
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;

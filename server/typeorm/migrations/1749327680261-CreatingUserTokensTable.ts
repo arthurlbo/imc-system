@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class CreatingUserTokenTable1749327680261 implements MigrationInterface {
+export class CreatingUserTokensTable1749327680261 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "users_token",
+                name: "user_tokens",
                 columns: [
                     {
                         name: "id",
@@ -46,7 +46,7 @@ export class CreatingUserTokenTable1749327680261 implements MigrationInterface {
         );
 
         await queryRunner.createForeignKey(
-            "users_token",
+            "user_tokens",
             new TableForeignKey({
                 columnNames: ["user_id"],
                 referencedColumnNames: ["id"],
@@ -58,10 +58,10 @@ export class CreatingUserTokenTable1749327680261 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        const table = await queryRunner.getTable("users_token");
+        const table = await queryRunner.getTable("user_tokens");
         const foreignKey = table.foreignKeys.find((fk) => fk.columnNames.indexOf("user_id") !== -1);
-        await queryRunner.dropForeignKey("users_token", foreignKey);
+        await queryRunner.dropForeignKey("user_tokens", foreignKey);
 
-        await queryRunner.dropTable("users_token");
+        await queryRunner.dropTable("user_tokens");
     }
 }
