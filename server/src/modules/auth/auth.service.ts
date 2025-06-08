@@ -8,13 +8,13 @@ import { TIMEZONE } from "@/constants/timezone";
 import { UnauthorizedException } from "@/commons/http-exception";
 
 import { User } from "@/modules/user/entity/user.entity";
-import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
 import { UserService } from "@/modules/user/user.service";
 
 import { LoginDTO } from "./dto/login.dto";
 import { UpdateDTO } from "./dto/update.dto";
 import { RegisterDTO } from "./dto/register.dto";
 import { GeneratedTokens, LoginResponse } from "./types";
+import { UserTokens } from "./entity/user-tokens.entity";
 
 export class AuthService {
     private readonly audience = "users";

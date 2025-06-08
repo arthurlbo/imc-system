@@ -2,13 +2,14 @@ import { Router } from "express";
 
 import { dataSource } from "@/typeorm/data-source";
 
+import { authMiddleware } from "@/middlewares/auth.middleware";
+
 import { User } from "@/modules/user/entity/user.entity";
 import { UserService } from "@/modules/user/user.service";
 
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UserTokens } from "./entity/user-tokens.entity";
-import { authMiddleware } from "@/middlewares/auth.middleware";
 
 const authRouter = Router();
 

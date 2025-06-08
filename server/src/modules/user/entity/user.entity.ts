@@ -2,7 +2,9 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 
 import { Status } from "@/enums/status.enum";
 import { Profile } from "@/enums/profile.enum";
+
 import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
+import { Assessment } from "@/modules/assessment/entity/assessment.entity";
 
 @Entity({
     name: "users",
@@ -42,4 +44,10 @@ export class User {
 
     @OneToMany(() => UserTokens, (token) => token.user)
     tokens?: UserTokens[];
+
+    @OneToMany(() => Assessment, (assessment) => assessment.evaluator)
+    appliedAssessments?: Assessment[];
+
+    @OneToMany(() => Assessment, (assessment) => assessment.student)
+    receivedAssessments?: Assessment[];
 }

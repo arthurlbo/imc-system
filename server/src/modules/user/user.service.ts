@@ -1,7 +1,8 @@
 import * as bcrypt from "bcrypt";
-import { Not, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { Profile } from "@/enums/profile.enum";
+import { ForbiddenException } from "@/commons/http-exception";
 
 import { User } from "./entity/user.entity";
 import { CreateUserDTO } from "./dto/create-user.dto";
@@ -10,22 +11,48 @@ import { UpdateUserDTO } from "./dto/update-user.dto";
 export class UserService {
     constructor(private readonly usersRepository: Repository<User>) {}
 
-    private getIsAdmin(loggedUser: User): boolean {
-        return loggedUser.profile === Profile.Admin;
+    private findAllMyStudents(loggedUser: User): Promise<User[]> {
+        return this.usersRepository
+            .createQueryBuilder("user")
+            .innerJoin("user.receivedAssessments", "assessment", "assessment.evaluator_id = :teacherId", {
+                teacherId: loggedUser.id,
+            })
+            .leftJoinAndSelect("user.appliedAssessments", "appliedAssessments")
+            .leftJoinAndSelect("user.receivedAssessments", "receivedAssessments")
+            .getMany();
     }
 
     public async findAllUsers(loggedUser: User): Promise<User[]> {
-        const isAdmin = this.getIsAdmin(loggedUser);
+        if (loggedUser.profile === Profile.Teacher) {
+            return this.findAllMyStudents(loggedUser);
+        }
 
         return this.usersRepository.find({
-            where: isAdmin ? {} : { profile: Not(Profile.Admin) },
+            relations: ["appliedAssessments", "receivedAssessments"],
         });
     }
 
-    public async findOneUser(id: string, loggedUser: User): Promise<User | null> {
-        const isAdmin = this.getIsAdmin(loggedUser);
+    private findMyStudent(id: string, loggedUser: User): Promise<User | null> {
+        return this.usersRepository
+            .createQueryBuilder("user")
+            .innerJoin("user.receivedAssessments", "assessment", "assessment.evaluator_id = :teacherId", {
+                teacherId: loggedUser.id,
+            })
+            .where("user.id = :id", { id })
+            .leftJoinAndSelect("user.appliedAssessments", "appliedAssessments")
+            .leftJoinAndSelect("user.receivedAssessments", "receivedAssessments")
+            .getOne();
+    }
 
-        return this.usersRepository.findOneBy({ id, profile: isAdmin ? undefined : Not(Profile.Admin) });
+    public async findOneUser(id: string, loggedUser: User): Promise<User | null> {
+        if (loggedUser.profile === Profile.Teacher) {
+            return this.findMyStudent(id, loggedUser);
+        }
+
+        return this.usersRepository.findOne({
+            where: { id },
+            relations: ["appliedAssessments", "receivedAssessments"],
+        });
     }
 
     public async createUser({ password, ...rest }: CreateUserDTO): Promise<User> {
@@ -40,15 +67,12 @@ export class UserService {
     }
 
     public async updateUser(id: string, { password, ...rest }: UpdateUserDTO, loggedUser: User): Promise<User> {
-        const isAdmin = this.getIsAdmin(loggedUser);
-
-        const userToUpdate = await this.usersRepository.findOneBy({
-            id,
-            profile: isAdmin ? undefined : Not(Profile.Admin),
-        });
+        const userToUpdate = await this.findOneUser(id, loggedUser);
 
         if (!userToUpdate) {
-            throw new Error(`User with id ${id} not found or you do not have permission to update this user.`);
+            throw new ForbiddenException(
+                `User with id ${id} not found or you do not have permission to update this user.`,
+            );
         }
 
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());

@@ -2,14 +2,16 @@ import { Router } from "express";
 
 import { dataSource } from "@/typeorm/data-source";
 
+import { Profile } from "@/enums/profile.enum";
+import { authMiddleware } from "@/middlewares/auth.middleware";
+import { profileMiddleware } from "@/middlewares/profile.middleware";
+
+import { AuthService } from "@/modules/auth/auth.service";
+import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
+
 import { User } from "./entity/user.entity";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
-import { AuthService } from "../auth/auth.service";
-import { UserTokens } from "../auth/entity/user-tokens.entity";
-import { authMiddleware } from "@/middlewares/auth.middleware";
-import { profileMiddleware } from "@/middlewares/profile.middleware";
-import { Profile } from "@/enums/profile.enum";
 
 const userRouter = Router();
 
@@ -23,7 +25,6 @@ const authMiddlewareInstance = authMiddleware(authService);
 
 const userController = new UserController(userService);
 
-userRouter.post("/", authMiddlewareInstance, profileMiddleware([Profile.Admin]), userController.createUser);
 userRouter.delete("/:id", authMiddlewareInstance, profileMiddleware([Profile.Admin]), userController.deleteUser);
 
 userRouter.get(
@@ -38,6 +39,13 @@ userRouter.get(
     authMiddlewareInstance,
     profileMiddleware([Profile.Admin, Profile.Teacher]),
     userController.findOneUser,
+);
+
+userRouter.post(
+    "/",
+    authMiddlewareInstance,
+    profileMiddleware([Profile.Admin, Profile.Teacher]),
+    userController.createUser,
 );
 
 userRouter.put(
