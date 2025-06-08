@@ -13,7 +13,7 @@ import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
 
 import { Assessment } from "./entity/assessment.entity";
 import { AssessmentService } from "./assessment.service";
-import { AssessmentController } from "./assessment.controller";
+import { AssessmentController } from "./assessment.controller"; 
 
 const assessmentRouter = Router();
 

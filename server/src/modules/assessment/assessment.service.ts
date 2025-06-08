@@ -79,7 +79,8 @@ export class AssessmentService {
         const classification = this.getClassification(bmi);
 
         const assessment = this.assessmentRepository.create({
-            ...assessmentData,
+            weight: assessmentData.weight,
+            height: assessmentData.height,
             bmi,
             classification,
             evaluator: {
@@ -100,9 +101,6 @@ export class AssessmentService {
     ): Promise<Assessment> => {
         const { id: evaluatorId } = loggedUser;
 
-        const bmi = this.getBmi(assessmentData.weight, assessmentData.height);
-        const classification = this.getClassification(bmi);
-
         const whereCondition = this.getWhereCondition(loggedUser);
 
         const assessmentToUpdate = await this.assessmentRepository.findOne({
@@ -110,6 +108,7 @@ export class AssessmentService {
                 ...whereCondition,
                 id: assessmentId,
             },
+            relations: ["evaluator", "student"],
         });
 
         if (!assessmentToUpdate) {
@@ -118,10 +117,14 @@ export class AssessmentService {
             );
         }
 
+        const bmi = this.getBmi(assessmentData.weight, assessmentData.height);
+        const classification = this.getClassification(bmi);
+
         await this.assessmentRepository.update(assessmentId, {
-            ...assessmentData,
             bmi,
             classification,
+            weight: assessmentData.weight,
+            height: assessmentData.height,
             evaluator: {
                 id: evaluatorId,
             },
