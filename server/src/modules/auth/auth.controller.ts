@@ -4,15 +4,16 @@ import { BadRequestException, UnauthorizedException } from "@/commons/http-excep
 
 import { User } from "@/modules/user/entity/user.entity";
 
+import { LoginResponse } from "./types";
 import { AuthService } from "./auth.service";
 import { loginSchema } from "./dto/login.dto";
 import { updateSchema } from "./dto/update.dto";
-import { GeneratedTokens, LoginResponse } from "./types";
+import { registerSchema } from "./dto/register.dto";
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    public async refreshAccessToken(req: Req, res: Res): Promise<GeneratedTokens> {
+    public refreshAccessToken = async (req: Req, res: Res): Promise<{ refreshToken: string }> => {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
@@ -22,9 +23,9 @@ export class AuthController {
         const tokens = await this.authService.refreshAccessToken(refreshToken);
 
         return res.status(200).json({ data: tokens });
-    }
+    };
 
-    public async me(req: Req, res: Res): Promise<User> {
+    public me = async (req: Req, res: Res): Promise<User> => {
         const user = req.user as User;
 
         if (!user) {
@@ -32,21 +33,21 @@ export class AuthController {
         }
 
         return res.status(200).json({ data: user });
-    }
+    };
 
-    public async register(req: Req, res: Res): Promise<GeneratedTokens> {
-        const parsedData = loginSchema.safeParse(req.body);
+    public register = async (req: Req, res: Res): Promise<{ refreshToken: string }> => {
+        const parsedData = registerSchema.safeParse(req.body);
 
         if (!parsedData.success) {
             throw new BadRequestException("Invalid registration data", parsedData.error.format());
         }
 
-        const tokens = await this.authService.register(parsedData.data);
+        const token = await this.authService.register(parsedData.data);
 
-        return res.status(201).json({ data: tokens });
-    }
+        return res.status(201).json({ data: token });
+    };
 
-    public async login(req: Req, res: Res): Promise<LoginResponse> {
+    public login = async (req: Req, res: Res): Promise<LoginResponse> => {
         const parsedData = loginSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -56,9 +57,9 @@ export class AuthController {
         const loggedUser = await this.authService.login(parsedData.data);
 
         return res.status(200).json({ data: loggedUser });
-    }
+    };
 
-    public async logout(req: Req, res: Res): Promise<{ success: boolean }> {
+    public logout = async (req: Req, res: Res): Promise<{ success: boolean }> => {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
@@ -68,9 +69,9 @@ export class AuthController {
         await this.authService.logout(refreshToken);
 
         return res.status(200).json({ data: { success: true } });
-    }
+    };
 
-    public async update(req: Req, res: Res): Promise<User> {
+    public update = async (req: Req, res: Res): Promise<User> => {
         const parsedData = updateSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -84,5 +85,5 @@ export class AuthController {
         const updatedUser = await this.authService.update(data.id, data, loggedUser);
 
         return res.status(200).json({ data: updatedUser });
-    }
+    };
 }

@@ -1,10 +1,6 @@
 import { User } from "../user/entity/user.entity";
 
-export interface GeneratedTokens {
-    accessToken: string;
-    refreshToken: string;
-}
-
-export interface LoginResponse extends GeneratedTokens {
+export interface LoginResponse {
     user: User;
+    refreshToken: string;
 }

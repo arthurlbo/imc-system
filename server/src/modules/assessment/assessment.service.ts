@@ -12,7 +12,7 @@ import { CreateAssessmentDTO } from "./dto/create-assessment.dto";
 export class AssessmentService {
     constructor(private readonly assessmentRepository: Repository<Assessment>) {}
 
-    private getWhereCondition(loggedUser: User): FindOptionsWhere<Assessment> {
+    private getWhereCondition = (loggedUser: User): FindOptionsWhere<Assessment> => {
         const whereConditionMap: Record<string, FindOptionsWhere<Assessment>> = {
             [Profile.Admin]: {},
             [Profile.Teacher]: {
@@ -28,18 +28,18 @@ export class AssessmentService {
         };
 
         return whereConditionMap[loggedUser.profile];
-    }
+    };
 
-    public async findAllAssessments(loggedUser: User): Promise<Assessment[]> {
+    public findAllAssessments = async (loggedUser: User): Promise<Assessment[]> => {
         const whereCondition = this.getWhereCondition(loggedUser);
 
         return this.assessmentRepository.find({
             where: whereCondition,
             relations: ["evaluator", "student"],
         });
-    }
+    };
 
-    public async findOneAssessment(assessmentId: string, loggedUser: User): Promise<Assessment | null> {
+    public findOneAssessment = async (assessmentId: string, loggedUser: User): Promise<Assessment | null> => {
         const whereCondition = this.getWhereCondition(loggedUser);
 
         return this.assessmentRepository.findOne({
@@ -49,13 +49,13 @@ export class AssessmentService {
             },
             relations: ["evaluator", "student"],
         });
-    }
+    };
 
-    private getBmi(weight: number, height: number): number {
+    private getBmi = (weight: number, height: number): number => {
         return Number((weight / (height * height)).toFixed(2));
-    }
+    };
 
-    private getClassification(bmi: number): BmiClassification {
+    private getClassification = (bmi: number): BmiClassification => {
         switch (true) {
             case bmi < 18.5:
                 return BmiClassification.Underweight;
@@ -70,9 +70,9 @@ export class AssessmentService {
             default:
                 return BmiClassification.ObesityClass3;
         }
-    }
+    };
 
-    public async createAssessment(assessmentData: CreateAssessmentDTO, loggedUser: User): Promise<Assessment> {
+    public createAssessment = async (assessmentData: CreateAssessmentDTO, loggedUser: User): Promise<Assessment> => {
         const { id: evaluatorId } = loggedUser;
 
         const bmi = this.getBmi(assessmentData.weight, assessmentData.height);
@@ -91,13 +91,13 @@ export class AssessmentService {
         });
 
         return this.assessmentRepository.save(assessment);
-    }
+    };
 
-    public async updateAssessment(
+    public updateAssessment = async (
         assessmentId: string,
         assessmentData: CreateAssessmentDTO,
         loggedUser: User,
-    ): Promise<Assessment> {
+    ): Promise<Assessment> => {
         const { id: evaluatorId } = loggedUser;
 
         const bmi = this.getBmi(assessmentData.weight, assessmentData.height);
@@ -131,9 +131,9 @@ export class AssessmentService {
         });
 
         return this.findOneAssessment(assessmentId, loggedUser);
-    }
+    };
 
-    public async deleteAssessment(assessmentId: string): Promise<void> {
+    public deleteAssessment = async (assessmentId: string): Promise<void> => {
         await this.assessmentRepository.delete(assessmentId);
-    }
+    };
 }

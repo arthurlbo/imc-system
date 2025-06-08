@@ -11,7 +11,7 @@ import { UpdateUserDTO } from "./dto/update-user.dto";
 export class UserService {
     constructor(private readonly usersRepository: Repository<User>) {}
 
-    private findAllMyStudents(loggedUser: User): Promise<User[]> {
+    private findAllMyStudents = (loggedUser: User): Promise<User[]> => {
         return this.usersRepository
             .createQueryBuilder("user")
             .innerJoin("user.receivedAssessments", "assessment", "assessment.evaluator_id = :teacherId", {
@@ -20,9 +20,9 @@ export class UserService {
             .leftJoinAndSelect("user.appliedAssessments", "appliedAssessments")
             .leftJoinAndSelect("user.receivedAssessments", "receivedAssessments")
             .getMany();
-    }
+    };
 
-    public async findAllUsers(loggedUser: User): Promise<User[]> {
+    public findAllUsers = async (loggedUser: User): Promise<User[]> => {
         if (loggedUser.profile === Profile.Teacher) {
             return this.findAllMyStudents(loggedUser);
         }
@@ -30,9 +30,9 @@ export class UserService {
         return this.usersRepository.find({
             relations: ["appliedAssessments", "receivedAssessments"],
         });
-    }
+    };
 
-    private findMyStudent(id: string, loggedUser: User): Promise<User | null> {
+    private findMyStudent = (id: string, loggedUser: User): Promise<User | null> => {
         return this.usersRepository
             .createQueryBuilder("user")
             .innerJoin("user.receivedAssessments", "assessment", "assessment.evaluator_id = :teacherId", {
@@ -42,9 +42,9 @@ export class UserService {
             .leftJoinAndSelect("user.appliedAssessments", "appliedAssessments")
             .leftJoinAndSelect("user.receivedAssessments", "receivedAssessments")
             .getOne();
-    }
+    };
 
-    public async findOneUser(id: string, loggedUser: User): Promise<User | null> {
+    public findOneUser = async (id: string, loggedUser: User): Promise<User | null> => {
         if (loggedUser.profile === Profile.Teacher) {
             return this.findMyStudent(id, loggedUser);
         }
@@ -53,9 +53,9 @@ export class UserService {
             where: { id },
             relations: ["appliedAssessments", "receivedAssessments"],
         });
-    }
+    };
 
-    public async createUser({ password, ...rest }: CreateUserDTO): Promise<User> {
+    public createUser = async ({ password, ...rest }: CreateUserDTO): Promise<User> => {
         const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
 
         const user = this.usersRepository.create({
@@ -63,10 +63,10 @@ export class UserService {
             password: hashedPassword,
         });
 
-        return this.usersRepository.save(user);
-    }
+        return await this.usersRepository.save(user);
+    };
 
-    public async updateUser(id: string, { password, ...rest }: UpdateUserDTO, loggedUser: User): Promise<User> {
+    public updateUser = async (id: string, { password, ...rest }: UpdateUserDTO, loggedUser: User): Promise<User> => {
         const userToUpdate = await this.findOneUser(id, loggedUser);
 
         if (!userToUpdate) {
@@ -83,9 +83,9 @@ export class UserService {
         });
 
         return this.findOneUser(id, loggedUser);
-    }
+    };
 
-    public async deleteUser(id: string): Promise<void> {
+    public deleteUser = async (id: string): Promise<void> => {
         await this.usersRepository.delete(id);
-    }
+    };
 }

@@ -10,19 +10,19 @@ import { createUserSchema } from "./dto/create-user.dto";
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    private getIsAdmin(loggedUser: User): boolean {
+    private getIsAdmin = (loggedUser: User): boolean => {
         return loggedUser.profile === Profile.Admin;
-    }
+    };
 
-    public async findAllUsers(req: Request, res: Response): Promise<User[]> {
+    public findAllUsers = async (req: Request, res: Response): Promise<Response> => {
         const loggedUser = req.user as User;
 
         const users = await this.userService.findAllUsers(loggedUser);
 
         return res.status(200).json({ data: users });
-    }
+    };
 
-    public async findOneUser(req: Request, res: Response): Promise<User | null> {
+    public findOneUser = async (req: Request, res: Response): Promise<Response> => {
         const loggedUser = req.user as User;
 
         const { id } = req.params as { id: string };
@@ -32,9 +32,9 @@ export class UserController {
         if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
         return res.status(200).json({ data: user });
-    }
+    };
 
-    public async createUser(req: Request, res: Response) {
+    public createUser = async (req: Request, res: Response) => {
         const result = createUserSchema.safeParse(req.body);
 
         if (!result.success) {
@@ -52,18 +52,17 @@ export class UserController {
         const user = await this.userService.createUser(result.data);
 
         return res.status(201).json({ data: user });
-    }
+    };
 
-    public async updateUser(req: Request, res: Response) {
+    public updateUser = async (req: Request, res: Response) => {
         const result = createUserSchema.safeParse(req.body);
 
         if (!result.success) {
             throw new BadRequestException("Invalid user data", result.error.format());
         }
 
-        const { id } = req.params;
-
         const loggedUser = req.user as User;
+        const { id } = req.params;
 
         const isAdmin = this.getIsAdmin(loggedUser);
 
@@ -74,13 +73,13 @@ export class UserController {
         const updatedUser = await this.userService.updateUser(id, result.data, loggedUser);
 
         return res.status(200).json({ data: updatedUser });
-    }
+    };
 
-    public async deleteUser(req: Request, res: Response) {
+    public deleteUser = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         await this.userService.deleteUser(id);
 
         return res.status(200).json({ data: { success: true } });
-    }
+    };
 }

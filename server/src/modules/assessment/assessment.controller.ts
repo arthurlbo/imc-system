@@ -5,7 +5,6 @@ import { BadRequestException, ForbiddenException, NotFoundException } from "@/co
 
 import { User } from "@/modules/user/entity/user.entity";
 
-import { Assessment } from "./entity/assessment.entity";
 import { AssessmentService } from "./assessment.service";
 import { createAssessmentSchema } from "./dto/create-assessment.dto";
 import { updateAssessmentSchema } from "./dto/update-assessment.dto";
@@ -13,17 +12,16 @@ import { updateAssessmentSchema } from "./dto/update-assessment.dto";
 export class AssessmentController {
     constructor(private readonly assessmentService: AssessmentService) {}
 
-    public async findAllAssessment(req: Request, res: Response): Promise<Assessment[]> {
+    public findAllAssessment = async (req: Request, res: Response): Promise<Response> => {
         const loggedUser = req.user as User;
 
         const assessments = await this.assessmentService.findAllAssessments(loggedUser);
 
         return res.status(200).json({ data: assessments });
-    }
+    };
 
-    public async findOneAssessment(req: Request, res: Response): Promise<Assessment | null> {
+    public findOneAssessment = async (req: Request, res: Response): Promise<Response> => {
         const loggedUser = req.user as User;
-
         const { id } = req.params as { id: string };
 
         const assessment = await this.assessmentService.findOneAssessment(id, loggedUser);
@@ -31,9 +29,9 @@ export class AssessmentController {
         if (!assessment) throw new NotFoundException(`Assessment with id ${id} not found`);
 
         return res.status(200).json({ data: assessment });
-    }
+    };
 
-    public async createAssessment(req: Request, res: Response) {
+    public createAssessment = async (req: Request, res: Response) => {
         const result = createAssessmentSchema.safeParse(req.body);
 
         if (!result.success) {
@@ -51,29 +49,28 @@ export class AssessmentController {
         const assessment = await this.assessmentService.createAssessment(result.data, loggedUser);
 
         return res.status(201).json({ data: assessment });
-    }
+    };
 
-    public async updateAssessment(req: Request, res: Response) {
+    public updateAssessment = async (req: Request, res: Response) => {
         const result = updateAssessmentSchema.safeParse(req.body);
 
         if (!result.success) {
             throw new BadRequestException("Invalid assessment data", result.error.format());
         }
 
-        const { id } = req.params;
-
         const loggedUser = req.user as User;
+        const { id } = req.params;
 
         const updatedAssessment = await this.assessmentService.updateAssessment(id, result.data, loggedUser);
 
         return res.status(200).json({ data: updatedAssessment });
-    }
+    };
 
-    public async deleteAssessment(req: Request, res: Response) {
+    public deleteAssessment = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         await this.assessmentService.deleteAssessment(id);
-
+        
         return res.status(200).json({ data: { success: true } });
-    }
+    };
 }

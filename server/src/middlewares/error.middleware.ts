@@ -11,16 +11,15 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
 
     if (err instanceof HttpException) {
         return res.status(err.status).json({
-            status: "error",
+            status: err.status,
             message: err.message,
             path: req.path,
             errors: err.errors,
-            date,
         });
     }
 
     return res.status(500).json({
-        status: "error",
+        status: 500,
         message: "Internal Server Error",
         path: req.path,
         date,

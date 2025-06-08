@@ -5,23 +5,21 @@ import { sign, SignOptions, verify, JwtPayload } from "jsonwebtoken";
 
 import { Status } from "@/enums/status.enum";
 import { TIMEZONE } from "@/constants/timezone";
-import { UnauthorizedException } from "@/commons/http-exception";
+import { BadRequestException, UnauthorizedException } from "@/commons/http-exception";
 
 import { User } from "@/modules/user/entity/user.entity";
 import { UserService } from "@/modules/user/user.service";
+import { UserTokens } from "@/modules/auth/entity/user-tokens.entity";
 
+import { LoginResponse } from "./types";
 import { LoginDTO } from "./dto/login.dto";
 import { UpdateDTO } from "./dto/update.dto";
 import { RegisterDTO } from "./dto/register.dto";
-import { GeneratedTokens, LoginResponse } from "./types";
-import { UserTokens } from "./entity/user-tokens.entity";
 
 export class AuthService {
     private readonly audience = "users";
     private readonly issuer = "Authentication";
-    private readonly accessTokenExpiresIn = "15m";
     private readonly refreshTokenExpiresIn = "7d";
-    private readonly secret: string = process.env.JWT_SECRET;
 
     constructor(
         private readonly usersRepository: Repository<User>,
@@ -29,32 +27,28 @@ export class AuthService {
         private readonly userService: UserService,
     ) {}
 
-    private generateToken(id: string, config: SignOptions = {}): string {
+    private generateToken = (id: string): string => {
         const defaultConfig: SignOptions = {
-            expiresIn: this.accessTokenExpiresIn,
+            expiresIn: this.refreshTokenExpiresIn,
             issuer: this.issuer,
             audience: this.audience,
         };
 
-        const { expiresIn, issuer, audience } = { ...defaultConfig, ...config };
+        const secret = process.env.JWT_SECRET;
 
-        if (!this.secret) {
-            throw new Error("JWT secret is not defined in environment variables.");
+        if (!secret) {
+            throw new BadRequestException("JWT secret is not defined in environment variables.");
         }
 
         const payload = { sub: id };
 
-        const token = sign(payload, this.secret, {
-            expiresIn,
-            issuer,
-            audience,
-        });
+        const token = sign(payload, secret, defaultConfig);
 
         return token;
-    }
+    };
 
-    private async generateRefreshToken(userId: string): Promise<string> {
-        const refreshToken = this.generateToken(userId, { expiresIn: this.refreshTokenExpiresIn });
+    private generateRefreshToken = async (userId: string): Promise<string> => {
+        const refreshToken = this.generateToken(userId);
 
         const expirationDate = toZonedTime(new Date(), TIMEZONE);
         expirationDate.setDate(expirationDate.getDate() + 7);
@@ -68,17 +62,14 @@ export class AuthService {
         await this.userTokensRepository.save(userToken);
 
         return refreshToken;
-    }
+    };
 
-    private async verifyToken(token: string, config: SignOptions = {}): Promise<{ id: string }> {
+    private verifyToken = async (token: string): Promise<{ id: string }> => {
         const defaultConfig: SignOptions = { issuer: this.issuer, audience: this.audience };
 
-        const { issuer, audience } = { ...defaultConfig, ...config };
+        const secret = process.env.JWT_SECRET;
 
-        const data = verify(token, this.secret, {
-            issuer,
-            audience,
-        });
+        const data = verify(token, secret, defaultConfig);
 
         if (!data) {
             throw new UnauthorizedException("Invalid token");
@@ -91,9 +82,9 @@ export class AuthService {
         }
 
         return { id };
-    }
+    };
 
-    public async validateRefreshToken(refreshToken: string): Promise<UserTokens> {
+    public validateRefreshToken = async (refreshToken: string): Promise<UserTokens> => {
         const { id: userId } = await this.verifyToken(refreshToken);
 
         const userToken = await this.userTokensRepository.findOne({
@@ -111,30 +102,27 @@ export class AuthService {
         }
 
         return userToken;
-    }
+    };
 
-    public async refreshAccessToken(refreshToken: string): Promise<GeneratedTokens> {
+    public refreshAccessToken = async (refreshToken: string): Promise<{ refreshToken: string }> => {
         const userToken = await this.validateRefreshToken(refreshToken);
-
-        const accessToken = this.generateToken(userToken.user.id);
 
         await this.userTokensRepository.remove(userToken);
 
         const newRefreshToken = await this.generateRefreshToken(userToken.user.id);
 
-        return { accessToken, refreshToken: newRefreshToken };
-    }
+        return { refreshToken: newRefreshToken };
+    };
 
-    public async register(data: RegisterDTO): Promise<GeneratedTokens> {
+    public register = async (data: RegisterDTO): Promise<{ refreshToken: string }> => {
         const newUser = await this.userService.createUser(data);
 
-        const accessToken = this.generateToken(newUser.id);
         const refreshToken = await this.generateRefreshToken(newUser.id);
 
-        return { accessToken, refreshToken };
-    }
+        return { refreshToken };
+    };
 
-    public async login({ user, password }: LoginDTO): Promise<LoginResponse> {
+    public login = async ({ user, password }: LoginDTO): Promise<LoginResponse> => {
         const userInfo = await this.usersRepository.findOneBy({
             user,
         });
@@ -147,22 +135,21 @@ export class AuthService {
             throw new UnauthorizedException("User is inactive");
         }
 
-        const accessToken = this.generateToken(userInfo.id);
         const refreshToken = await this.generateRefreshToken(userInfo.id);
 
-        return { accessToken, refreshToken, user: userInfo };
-    }
+        return { refreshToken, user: userInfo };
+    };
 
-    public async update(id: string, data: UpdateDTO, loggedUser: User): Promise<User> {
+    public update = async (id: string, data: UpdateDTO, loggedUser: User): Promise<User> => {
         if (id !== data.id) {
             throw new UnauthorizedException("You can only update your own account");
         }
 
         return this.userService.updateUser(id, data, loggedUser);
-    }
+    };
 
-    public async logout(refreshToken: string): Promise<void> {
-        const { id: userId } = await this.verifyToken(refreshToken, {});
+    public logout = async (refreshToken: string): Promise<void> => {
+        const { id: userId } = await this.verifyToken(refreshToken);
 
         const userToken = await this.userTokensRepository.findOne({
             where: { refreshToken, userId },
@@ -171,5 +158,5 @@ export class AuthService {
         if (userToken) {
             await this.userTokensRepository.remove(userToken);
         }
-    }
+    };
 }
