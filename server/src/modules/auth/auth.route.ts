@@ -29,6 +29,6 @@ authRouter.post("/refresh", authMiddlewareInstance, authController.refreshAccess
 authRouter.post("/register", authController.register);
 authRouter.post("/login", authController.login);
 authRouter.post("/logout", authMiddlewareInstance, authController.logout);
-authRouter.put("/update", authMiddlewareInstance, authController.update);
+authRouter.put("/:id", authMiddlewareInstance, authController.update);
 
 export { authRouter };

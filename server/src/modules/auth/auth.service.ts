@@ -141,7 +141,7 @@ export class AuthService {
     };
 
     public update = async (id: string, data: UpdateDTO, loggedUser: User): Promise<User> => {
-        if (id !== data.id) {
+        if (loggedUser.id !== id) {
             throw new UnauthorizedException("You can only update your own account");
         }
 

@@ -7,8 +7,8 @@ import { User } from "@/modules/user/entity/user.entity";
 import { LoginResponse } from "./types";
 import { AuthService } from "./auth.service";
 import { loginSchema } from "./dto/login.dto";
-import { updateSchema } from "./dto/update.dto";
 import { registerSchema } from "./dto/register.dto";
+import { UpdateDTO, updateSchema } from "./dto/update.dto";
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
@@ -79,10 +79,11 @@ export class AuthController {
         }
 
         const loggedUser = req.user as User;
+        const { id } = req.params as { id: string };
 
-        const data = parsedData.data;
+        const data = parsedData.data as UpdateDTO;
 
-        const updatedUser = await this.authService.update(data.id, data, loggedUser);
+        const updatedUser = await this.authService.update(id, data, loggedUser);
 
         return res.status(200).json({ data: updatedUser });
     };
