@@ -4,7 +4,7 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
 
     if (!token) {
-        return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL + "/login");
+        return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL + "/auth/login");
     }
 
     const response = NextResponse.next();

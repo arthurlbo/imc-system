@@ -1,6 +1,5 @@
 "use client";
 
-import NextLink from "next/link";
 import cookies from "js-cookie";
 
 import { api } from "@/lib/api";
@@ -8,33 +7,34 @@ import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { IconLock, IconUser } from "@tabler/icons-react";
-import { Button, Flex, Text, Link as ChakraLink } from "@chakra-ui/react";
+import { IconLock, IconUser, IconUserCircle } from "@tabler/icons-react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 
 import { toaster, Input } from "@/components/ui";
 
-import { LoginResponse } from "./types";
-import { LoginSchema, loginSchema } from "./schema";
+import { RegisterResponse } from "./types";
+import { registerSchema, RegisterSchema } from "./schema";
 
-const postLogin = async (postData: LoginSchema) => {
-    const { data } = await api.post<{ data: LoginResponse }>("/auth/login", postData);
+const postRegister = async (postData: RegisterSchema) => {
+    const { data } = await api.post<{ data: RegisterResponse }>("/auth/register", postData);
 
     return data.data;
 };
 
-export const LoginForm = () => {
-    const loginForm = useForm<LoginSchema>({
-        resolver: zodResolver(loginSchema),
+export const RegisterForm = () => {
+    const registerForm = useForm<RegisterSchema>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
+            name: "",
             user: "",
             password: "",
         },
     });
 
-    const { handleSubmit } = loginForm;
+    const { handleSubmit } = registerForm;
 
     const { mutate, isPending } = useMutation({
-        mutationFn: postLogin,
+        mutationFn: postRegister,
         onSuccess: async (response) => {
             cookies.set("token", response.refreshToken, { expires: 7 });
 
@@ -42,9 +42,8 @@ export const LoginForm = () => {
         },
         onError: () => {
             toaster.create({
-                title: "Error ao realizar login",
-                description:
-                    "Ocorreu um erro ao tentar realizar o login. Por favor, verifique suas credenciais e tente novamente.",
+                title: "Error ao realizar o cadastro",
+                description: "Ocorreu um erro ao tentar realizar o cadastro. Por favor, tente novamente.",
                 closable: true,
                 duration: 9999,
                 type: "error",
@@ -52,12 +51,12 @@ export const LoginForm = () => {
         },
     });
 
-    const onHandleSubmit = async (data: LoginSchema) => {
+    const onHandleSubmit = async (data: RegisterSchema) => {
         mutate(data);
     };
 
     return (
-        <FormProvider {...loginForm}>
+        <FormProvider {...registerForm}>
             <form onSubmit={handleSubmit(onHandleSubmit)} noValidate>
                 <Flex
                     direction="column"
@@ -68,11 +67,20 @@ export const LoginForm = () => {
                     bg="transparent"
                 >
                     <Text color="primary" fontSize="3xl" fontWeight={700} textAlign="center">
-                        Login
+                        Cadastro
                     </Text>
 
                     <Input
-                        id="login-user-input"
+                        id="register-name-input"
+                        name="name"
+                        placeholder="Digite seu nome"
+                        icon={IconUserCircle}
+                        type="text"
+                        label="Nome"
+                    />
+
+                    <Input
+                        id="register-user-input"
                         name="user"
                         placeholder="Digite seu usuário"
                         icon={IconUser}
@@ -81,7 +89,7 @@ export const LoginForm = () => {
                     />
 
                     <Input
-                        id="login-input-password"
+                        id="register-input-password"
                         name="password"
                         label="Senha"
                         placeholder="Digite sua senha"
@@ -106,12 +114,8 @@ export const LoginForm = () => {
                         transitionDuration="0.3s"
                         transitionTimingFunction="ease-in-out"
                     >
-                        Entrar
+                        Cadastrar
                     </Button>
-
-                    <ChakraLink asChild color="primary" fontSize="sm" fontWeight={600} textAlign="center">
-                        <NextLink href="/auth/register">Cadastrar</NextLink>
-                    </ChakraLink>
                 </Flex>
             </form>
         </FormProvider>
