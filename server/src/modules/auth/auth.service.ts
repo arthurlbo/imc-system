@@ -5,7 +5,7 @@ import { sign, SignOptions, verify, JwtPayload } from "jsonwebtoken";
 
 import { Status } from "@/enums/status.enum";
 import { TIMEZONE } from "@/constants/timezone";
-import { BadRequestException, UnauthorizedException } from "@/commons/http-exception";
+import { BadRequestException, ForbiddenException, UnauthorizedException } from "@/commons/http-exception";
 
 import { UserReturn } from "@/modules/user/types";
 import { User } from "@/modules/user/entity/user.entity";
@@ -140,11 +140,11 @@ export class AuthService {
         });
 
         if (!userInfo || !(await bcrypt.compare(password, userInfo.password))) {
-            throw new UnauthorizedException("Invalid username or password");
+            throw new BadRequestException("Invalid username or password");
         }
 
         if (userInfo.status === Status.Inactive) {
-            throw new UnauthorizedException("User is inactive");
+            throw new ForbiddenException("User is inactive");
         }
 
         const refreshToken = await this.generateRefreshToken(userInfo.id);
