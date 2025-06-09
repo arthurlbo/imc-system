@@ -3,7 +3,7 @@
 import NextLink from "next/link";
 import cookies from "js-cookie";
 
-import { api } from "@/lib/api";
+import { api } from "@/lib";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";

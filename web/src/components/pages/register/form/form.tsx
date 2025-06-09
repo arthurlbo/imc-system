@@ -1,14 +1,15 @@
 "use client";
 
+import NextLink from "next/link";
 import cookies from "js-cookie";
 
-import { api } from "@/lib/api";
+import { api } from "@/lib";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { IconLock, IconUser, IconUserCircle } from "@tabler/icons-react";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Button, Flex, Text, Link as ChakraLink } from "@chakra-ui/react";
 
 import { toaster, Input } from "@/components/ui";
 
@@ -116,6 +117,10 @@ export const RegisterForm = () => {
                     >
                         Cadastrar
                     </Button>
+
+                    <ChakraLink asChild color="primary" fontSize="sm" fontWeight={600} textAlign="center">
+                        <NextLink href="/auth/login">Login</NextLink>
+                    </ChakraLink>
                 </Flex>
             </form>
         </FormProvider>
