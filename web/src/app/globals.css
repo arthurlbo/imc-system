@@ -2,3 +2,9 @@ body {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
+
+input:-webkit-autofill {
+    box-shadow: 0 0 0 1000px #1e1e1e inset !important; /* substitua pela cor de fundo desejada */
+    -webkit-text-fill-color: #ffffff !important; /* substitua pela cor do texto */
+    transition: background-color 9999s ease-in-out 0s !important;
+}

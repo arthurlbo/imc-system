@@ -21,10 +21,11 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${poppins.variable}`}>
+            <body className={`${poppins.variable}`} >
                 {
                     <Providers>
                         <Flex
+                            as="main"
                             direction="column"
                             position="relative"
                             w="100%"
@@ -38,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             padding={4}
                             gap={4}
                             fontFamily="body"
-                            color="white"
+                            color="primary"
                         >
                             {children}
                         </Flex>
