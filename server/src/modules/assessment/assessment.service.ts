@@ -18,9 +18,9 @@ export class AssessmentService {
     private formatAssessmentToReturn = (assessment: Assessment): AssessmentReturn => {
         return {
             id: assessment.id,
-            weight: assessment.weight,
-            height: assessment.height,
-            bmi: assessment.bmi,
+            weight: Number(assessment.weight.toFixed(2)),
+            height: Number(assessment.height.toFixed(2)),
+            bmi: Number(assessment.bmi.toFixed(2)),
             classification: assessment.classification,
             createdAt: convertDateToTz(assessment.createdAt),
             updatedAt: convertDateToTz(assessment.updatedAt),

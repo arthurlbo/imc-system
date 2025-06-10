@@ -10,6 +10,8 @@
         "migrate:down": "pnpm typeorm:ts migration:revert -d typeorm/data-source.ts",
         "clear:db": "pnpm typeorm:ts schema:drop -d typeorm/data-source.ts",
         "seed:users": "tsx typeorm/seeds/users.seed.ts",
+        "seed:assessments": "tsx typeorm/seeds/assessments.seed.ts",
+        "run:seeds": "pnpm seed:users && pnpm seed:assessments",
         "commit": "git-cz"
     },
     "dependencies": {
