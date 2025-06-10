@@ -28,7 +28,7 @@ export const EvaluatorsFilter = () => {
     };
 
     return (
-        <Skeleton loading={isLoading}>
+        <Skeleton loading={isLoading} w={{ base: "full", md: 72 }}>
             <Select.Root
                 multiple
                 disabled={isLoading}

@@ -10,7 +10,7 @@ interface ActionButtonsProps {
 
 export const ActionButtons = ({ userId, shouldShowDeleteButton }: ActionButtonsProps) => {
     return (
-        <Flex as="td" position="absolute" right={2} top="50%" transform="translateY(-50%)" gap={2} align="center">
+        <Flex gap={2} align="center">
             <EditModal userId={userId} />
             {shouldShowDeleteButton && <DeleteModal userId={userId} />}
         </Flex>

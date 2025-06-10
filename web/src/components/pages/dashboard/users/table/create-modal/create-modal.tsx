@@ -14,7 +14,7 @@ export const CreateUserModal = () => {
             <Dialog.Trigger asChild>
                 <Button
                     h={10}
-                    w="auto"
+                    w={{ base: "full", md: "auto" }}
                     px={4}
                     color="primary"
                     bg="green.500"

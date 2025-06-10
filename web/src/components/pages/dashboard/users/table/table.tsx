@@ -11,11 +11,16 @@ import { Profile } from "@/enums/profile.enum";
 import { ActionButtons } from "./action-buttons";
 import { CreateUserModal } from "./create-modal";
 
-const columns = ["Nome", "Usuário", "Perfil", "Exames aplicados", "Exames realizados", "Status"];
+const columns = ["Nome", "Usuário", "Perfil", "Exames aplicados", "Exames realizados", "Status", ""];
 
-const TableCell = ({ children }: { children: ReactNode }) => {
+interface TableCellProps {
+    children: ReactNode;
+    width?: string | number;
+}
+
+const TableCell = ({ children, width }: TableCellProps) => {
     return (
-        <Table.Cell py={4} borderColor="secondary">
+        <Table.Cell py={4} borderColor="secondary" w={width}>
             {children}
         </Table.Cell>
     );
@@ -30,52 +35,57 @@ export const UsersTable = () => {
                 <CreateUserModal />
 
                 <Flex w="full" h="auto" bg="hover" borderRadius="lg" overflow="hidden" pb={14}>
-                    <Table.Root>
-                        <Table.Header>
-                            <Table.Row bg="primary" color="background">
-                                {columns.map((column) => (
-                                    <Table.Cell key={column} fontWeight="semibold" fontSize="sm">
-                                        {column}
-                                    </Table.Cell>
-                                ))}
-                            </Table.Row>
-                        </Table.Header>
+                    <Table.ScrollArea w="full">
+                        <Table.Root>
+                            <Table.Header>
+                                <Table.Row bg="primary" color="background">
+                                    {columns.map((column) => (
+                                        <Table.Cell key={column} fontWeight="semibold" fontSize="sm">
+                                            {column}
+                                        </Table.Cell>
+                                    ))}
+                                </Table.Row>
+                            </Table.Header>
 
-                        <Table.Body>
-                            {users.map((user) => {
-                                const appliedAssessments = user.appliedAssessments.length;
-                                const receivedAssessments = user.receivedAssessments.length;
+                            <Table.Body>
+                                {users.map((user) => {
+                                    const appliedAssessments = user.appliedAssessments.length;
+                                    const receivedAssessments = user.receivedAssessments.length;
 
-                                const shouldShowDeleteButton = appliedAssessments === 0 && receivedAssessments === 0;
+                                    const shouldShowDeleteButton =
+                                        appliedAssessments === 0 && receivedAssessments === 0;
 
-                                return (
-                                    <Table.Row
-                                        key={user.id}
-                                        position="relative"
-                                        bg="transparent"
-                                        _hover={{ bg: "hover" }}
-                                        borderColor="tertiary"
-                                        color="primary"
-                                        fontWeight={600}
-                                    >
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.user}</TableCell>
-                                        <TableCell>{dictionary(user.profile)}</TableCell>
-                                        <TableCell>{user.appliedAssessments.length}</TableCell>
-                                        <TableCell>{user.receivedAssessments.length}</TableCell>
-                                        <TableCell>{dictionary(user.status)}</TableCell>
+                                    return (
+                                        <Table.Row
+                                            key={user.id}
+                                            position="relative"
+                                            bg="transparent"
+                                            _hover={{ bg: "hover" }}
+                                            borderColor="tertiary"
+                                            color="primary"
+                                            fontWeight={600}
+                                        >
+                                            <TableCell>{user.name}</TableCell>
+                                            <TableCell>{user.user}</TableCell>
+                                            <TableCell>{dictionary(user.profile)}</TableCell>
+                                            <TableCell>{user.appliedAssessments.length}</TableCell>
+                                            <TableCell>{user.receivedAssessments.length}</TableCell>
+                                            <TableCell>{dictionary(user.status)}</TableCell>
 
-                                        {user.profile !== Profile.Admin && (
-                                            <ActionButtons
-                                                userId={user.id}
-                                                shouldShowDeleteButton={shouldShowDeleteButton}
-                                            />
-                                        )}
-                                    </Table.Row>
-                                );
-                            })}
-                        </Table.Body>
-                    </Table.Root>
+                                            <TableCell width={20}>
+                                                {user.profile !== Profile.Admin && (
+                                                    <ActionButtons
+                                                        userId={user.id}
+                                                        shouldShowDeleteButton={shouldShowDeleteButton}
+                                                    />
+                                                )}
+                                            </TableCell>
+                                        </Table.Row>
+                                    );
+                                })}
+                            </Table.Body>
+                        </Table.Root>
+                    </Table.ScrollArea>
                 </Flex>
             </Flex>
         </Skeleton>
