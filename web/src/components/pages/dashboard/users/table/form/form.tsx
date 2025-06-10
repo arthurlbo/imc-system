@@ -12,7 +12,7 @@ import { UserReturn } from "@/types";
 import { Profile } from "@/enums/profile.enum";
 import { useGetLoggedUser, useGetUser } from "@/hooks";
 
-import { IconLock, IconUser, IconUserCircle } from "@tabler/icons-react";
+import { IconChecks, IconLock, IconUser, IconUserCircle, IconUserScan } from "@tabler/icons-react";
 import { Button, Flex } from "@chakra-ui/react";
 
 import { toaster, Input, Select } from "@/components/ui";
@@ -168,7 +168,7 @@ export const UserForm = ({ userId, setOpen }: UserFormProps) => {
                         name="profile"
                         label="Perfil"
                         placeholder="Selecione o perfil"
-                        icon={IconUser}
+                        icon={IconUserScan}
                         options={filteredProfiles}
                         customStyles={{
                             borderColor: "hover",
@@ -182,7 +182,7 @@ export const UserForm = ({ userId, setOpen }: UserFormProps) => {
                         name="status"
                         label="Status"
                         placeholder="Selecione o status"
-                        icon={IconUser}
+                        icon={IconChecks}
                         options={STATUS_OPTIONS}
                         customStyles={{
                             borderColor: "hover",

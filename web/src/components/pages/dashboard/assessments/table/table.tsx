@@ -8,6 +8,8 @@ import { dictionary } from "@/commons";
 import { useGetAssessments } from "@/hooks";
 
 import { ActionButtons } from "./action-buttons";
+import { StudentsFilter } from "./students-filter";
+import { EvaluatorsFilter } from "./evaluators-filter";
 import { CreateAssessmentModal } from "./create-modal";
 
 const columns = ["Nome do Avaliador", "Nome do Aluno", "Altura (cm)", "Peso (kg)", "IMC", "Classificação"];
@@ -31,7 +33,14 @@ export const AssessmentsTable = () => {
     return (
         <Skeleton loading={isLoading} w="100%" h="100%" mt={4}>
             <Flex direction="column" w="full" h="auto" gap={8} justify="end" align="end">
-                <CreateAssessmentModal />
+                <Flex w="full" h="auto" justify="between" align="center" gap={4}>
+                    <Flex flex={1} align="center" gap={4}>
+                        <EvaluatorsFilter />
+                        <StudentsFilter />
+                    </Flex>
+
+                    <CreateAssessmentModal />
+                </Flex>
 
                 <Flex w="full" h="auto" bg="hover" borderRadius="lg" overflow="hidden" pb={14}>
                     <Table.Root>
