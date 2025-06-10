@@ -20,3 +20,8 @@ export interface AssessmentReturn {
         profile: Profile;
     };
 }
+
+export interface FindAllAssessmentsQueryParams {
+    evaluatorsId?: string;
+    studentsId?: string;
+}

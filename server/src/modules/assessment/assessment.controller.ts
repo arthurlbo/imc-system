@@ -5,6 +5,8 @@ import { BadRequestException, ForbiddenException, NotFoundException } from "@/co
 
 import { User } from "@/modules/user/entity/user.entity";
 
+import { FindAllAssessmentsQueryParams } from "./types";
+
 import { AssessmentService } from "./assessment.service";
 import { createAssessmentSchema } from "./schemas/create-assessment.schema";
 import { updateAssessmentSchema } from "./schemas/update-assessment.schema";
@@ -15,7 +17,16 @@ export class AssessmentController {
     public findAllAssessment = async (req: Request, res: Response) => {
         const loggedUser = req.user as User;
 
-        const assessments = await this.assessmentService.findAllAssessments(loggedUser);
+        const { evaluatorsId, studentsId } = req.query as unknown as FindAllAssessmentsQueryParams;
+
+        const parsedStudentsId = studentsId ? studentsId.split(",") : undefined;
+        const parsedEvaluatorsId = evaluatorsId ? evaluatorsId.split(",") : undefined;
+
+        const assessments = await this.assessmentService.findAllAssessments(
+            loggedUser,
+            parsedEvaluatorsId,
+            parsedStudentsId,
+        );
 
         return res.status(200).json({ data: assessments });
     };

@@ -1,4 +1,4 @@
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, In, Repository } from "typeorm";
 
 import { Profile } from "@/enums/profile.enum";
 import { ForbiddenException } from "@/commons/http-exception";
@@ -55,11 +55,20 @@ export class AssessmentService {
         return whereConditionMap[loggedUser.profile];
     };
 
-    public findAllAssessments = async (loggedUser: User): Promise<AssessmentReturn[]> => {
+    public findAllAssessments = async (
+        loggedUser: User,
+        evaluatorsId?: string[],
+        studentsId?: string[],
+    ): Promise<AssessmentReturn[]> => {
         const whereCondition = this.getWhereCondition(loggedUser);
 
+        const mergedWhereCondition: FindOptionsWhere<Assessment> = {
+            ...whereCondition,
+            ...(evaluatorsId && evaluatorsId.length > 0 && { evaluator: { id: In(evaluatorsId) } }),
+            ...(studentsId && studentsId.length > 0 && { student: { id: In(studentsId) } }),
+        };
         const assessments = await this.assessmentRepository.find({
-            where: whereCondition,
+            where: mergedWhereCondition,
             relations: ["evaluator", "student"],
         });
 
