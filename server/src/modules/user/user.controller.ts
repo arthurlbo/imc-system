@@ -83,4 +83,18 @@ export class UserController {
 
         return res.status(200).json({ data: { success: true } });
     };
+
+    public findAllStudents = async (req: Request, res: Response) => {
+        const loggedUser = req.user as User;
+
+        const students = await this.userService.findAllStudents(loggedUser);
+
+        return res.status(200).json({ data: students });
+    };
+
+    public findAllTeachers = async (req: Request, res: Response) => {
+        const teachers = await this.userService.findAllTeachers();
+
+        return res.status(200).json({ data: teachers });
+    };
 }

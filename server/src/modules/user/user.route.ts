@@ -25,13 +25,25 @@ const authMiddlewareInstance = authMiddleware(authService);
 
 const userController = new UserController(userService);
 
-userRouter.delete("/:id", authMiddlewareInstance, profileMiddleware([Profile.Admin]), userController.deleteUser);
-
 userRouter.get(
     "/",
     authMiddlewareInstance,
     profileMiddleware([Profile.Admin, Profile.Teacher]),
     userController.findAllUsers,
+);
+
+userRouter.get(
+    "/students",
+    authMiddlewareInstance,
+    profileMiddleware([Profile.Admin, Profile.Teacher]),
+    userController.findAllStudents,
+);
+
+userRouter.get(
+    "/teachers",
+    authMiddlewareInstance,
+    profileMiddleware([Profile.Admin, Profile.Teacher]),
+    userController.findAllTeachers,
 );
 
 userRouter.get(
@@ -54,5 +66,7 @@ userRouter.put(
     profileMiddleware([Profile.Admin, Profile.Teacher]),
     userController.updateUser,
 );
+
+userRouter.delete("/:id", authMiddlewareInstance, profileMiddleware([Profile.Admin]), userController.deleteUser);
 
 export { userRouter };

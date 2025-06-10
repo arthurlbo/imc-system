@@ -114,7 +114,12 @@ export class UserService {
 
         const user = await this.usersRepository.findOne({
             where: { id },
-            relations: ["appliedAssessments", "receivedAssessments"],
+            relations: [
+                "appliedAssessments",
+                "receivedAssessments",
+                "receivedAssessments.evaluator",
+                "appliedAssessments.student",
+            ],
         });
 
         return this.formatUserToReturn(user);
@@ -162,5 +167,38 @@ export class UserService {
 
     public deleteUser = async (id: string): Promise<void> => {
         await this.usersRepository.delete(id);
+    };
+
+    public findAllStudents = async (loggedUser: User): Promise<UserReturn[]> => {
+        if (loggedUser.profile === Profile.Teacher) {
+            const students = await this.findAllMyStudents(loggedUser);
+            return students.map(this.formatUserToReturn);
+        }
+
+        const students = await this.usersRepository.find({
+            where: { profile: Profile.Student },
+            relations: [
+                "appliedAssessments",
+                "receivedAssessments",
+                "receivedAssessments.evaluator",
+                "appliedAssessments.student",
+            ],
+        });
+
+        return students.map(this.formatUserToReturn);
+    };
+
+    public findAllTeachers = async (): Promise<UserReturn[]> => {
+        const teachers = await this.usersRepository.find({
+            where: { profile: Profile.Teacher },
+            relations: [
+                "appliedAssessments",
+                "receivedAssessments",
+                "receivedAssessments.evaluator",
+                "appliedAssessments.student",
+            ],
+        });
+
+        return teachers.map(this.formatUserToReturn);
     };
 }

@@ -2,7 +2,9 @@ import * as bcrypt from "bcrypt";
 
 import { dataSource } from "../data-source";
 
-async function seedUsers() {
+import { Profile } from "@/enums/profile.enum";
+
+async function usersSeed() {
     const connection = await dataSource.initialize();
 
     const hashedPassword = await bcrypt.hash("12345", bcrypt.genSaltSync());
@@ -13,24 +15,34 @@ async function seedUsers() {
         .into("users")
         .values([
             {
+                id: "29d07e8e-285c-422c-b1e7-39d32685b72c",
                 name: "Administrador",
-                user: "admin",
+                user: Profile.Admin,
                 password: hashedPassword,
-                profile: "admin",
+                profile: Profile.Admin,
                 status: "active",
             },
             {
+                id: "446bc200-1b78-47ba-880d-0c3b75b22071",
                 name: "Professor",
-                user: "professor",
+                user: Profile.Teacher,
                 password: hashedPassword,
-                profile: "teacher",
+                profile: Profile.Teacher,
                 status: "active",
             },
             {
-                name: "Estudante",
-                user: "estudante",
+                id: "2d89e987-5995-42fd-a41e-3bf76d354d00",
+                name: "Aluno",
+                user: Profile.Student,
                 password: hashedPassword,
-                profile: "student",
+                profile: Profile.Student,
+                status: "active",
+            },
+            {
+                name: "Aluno 2",
+                user: "student2",
+                password: hashedPassword,
+                profile: Profile.Student,
                 status: "active",
             },
         ])
@@ -40,4 +52,4 @@ async function seedUsers() {
     console.log("Seed concluída!");
 }
 
-seedUsers().catch((error) => console.error(error));
+usersSeed().catch((error) => console.error(error));
