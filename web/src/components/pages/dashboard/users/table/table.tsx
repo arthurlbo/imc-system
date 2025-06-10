@@ -4,11 +4,11 @@ import { ReactNode } from "react";
 
 import { Flex, Skeleton, Table } from "@chakra-ui/react";
 
+import { useGetUsers } from "@/hooks";
 import { dictionary } from "@/commons";
-
-import { useGetUsers } from "../use-get-users";
-import { ActionButtons } from "./action-buttons";
 import { Profile } from "@/enums/profile.enum";
+
+import { ActionButtons } from "./action-buttons";
 import { CreateUserModal } from "./create-modal";
 
 const columns = ["Nome", "Usuário", "Perfil", "Exames aplicados", "Exames realizados", "Status"];

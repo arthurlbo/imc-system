@@ -15,7 +15,7 @@ export const useGetUser = (id: string, enabled: boolean = true): { user: UserRet
     const { data, isLoading } = useQuery({
         queryKey: ["user", id],
         queryFn: () => getUserRequest(id),
-        enabled,
+        enabled: Boolean(id) && enabled,
     });
 
     return { user: data ?? null, isLoading };

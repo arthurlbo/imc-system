@@ -7,6 +7,7 @@ import { Icon, Input as ChakraInput, InputGroup, Field, IconButton } from "@chak
 import { IconEye, IconEyeClosed, TablerIcon } from "@tabler/icons-react";
 
 import { useFormContext } from "react-hook-form";
+import { useHookFormMask, withMask } from "use-mask-input";
 
 interface InputProps {
     id: string;
@@ -16,6 +17,7 @@ interface InputProps {
     icon: TablerIcon;
     placeholder: string;
     passwordInput?: boolean;
+    mask?: string;
     customStyles?: {
         borderColor?: string;
         hoverBorderColor?: string;
@@ -41,6 +43,7 @@ export const Input = ({
     passwordInput = false,
     label,
     icon,
+    mask,
     type = "text",
     customStyles = {
         borderColor: "primary",
@@ -55,6 +58,8 @@ export const Input = ({
         register,
         formState: { errors },
     } = useFormContext();
+
+    const registerWithMask = useHookFormMask(register);
 
     return (
         <Field.Root invalid={!!errors[name]}>
@@ -84,7 +89,7 @@ export const Input = ({
                 }
             >
                 <ChakraInput
-                    {...register(name)}
+                    {...(mask ? registerWithMask(name, mask) : register(name))}
                     id={id}
                     h={10}
                     w="full"

@@ -41,6 +41,9 @@ importers:
       react-hook-form:
         specifier: ^7.57.0
         version: 7.57.0(react@19.1.0)
+      use-mask-input:
+        specifier: ^3.4.2
+        version: 3.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       zod:
         specifier: ^3.25.56
         version: 3.25.56
@@ -2467,6 +2470,13 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  use-mask-input@3.4.2:
+    resolution: {integrity: sha512-d+lYFl/6rsmdya3bZfMoMqZYC5uSKDPtWp/BD+FQ6KRsAKaPfRO1Z/jvagrytKCpvIrpER3i/WKC/4baIzlr+A==}
+    engines: {node: '>=16', npm: '>=7'}
+    peerDependencies:
+      react: '>=16.4 || 17 || 18 || 20'
+      react-dom: '>=16.4 || 17 || 18 || 20'
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -5574,6 +5584,11 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  use-mask-input@3.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   util-deprecate@1.0.2: {}
 

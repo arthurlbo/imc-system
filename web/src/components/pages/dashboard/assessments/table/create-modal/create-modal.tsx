@@ -1,12 +1,14 @@
+"use client";
+
 import { useState } from "react";
 
-import { IconUserPlus } from "@tabler/icons-react";
+import { IconReportMedical } from "@tabler/icons-react";
 
 import { Button, CloseButton, Dialog, Icon, Portal } from "@chakra-ui/react";
 
-import { UserForm } from "../form";
+import { AssessmentForm } from "../form";
 
-export const CreateUserModal = () => {
+export const CreateAssessmentModal = () => {
     const [open, setOpen] = useState(false);
 
     return (
@@ -24,7 +26,7 @@ export const CreateUserModal = () => {
                     transition="background 0.2s ease-in-out"
                     rounded="lg"
                 >
-                    <Icon as={IconUserPlus} h={5} w={5} />
+                    <Icon as={IconReportMedical} h={5} w={5} />
                     <span>Cadastrar</span>
                 </Button>
             </Dialog.Trigger>
@@ -35,11 +37,11 @@ export const CreateUserModal = () => {
                 <Dialog.Positioner>
                     <Dialog.Content>
                         <Dialog.Header>
-                            <Dialog.Title>Cadastrar Usuário</Dialog.Title>
+                            <Dialog.Title>Cadastrar Exame</Dialog.Title>
                         </Dialog.Header>
 
                         <Dialog.Body>
-                            <UserForm setOpen={setOpen} />
+                            <AssessmentForm setOpen={setOpen} />
                         </Dialog.Body>
 
                         <Dialog.CloseTrigger asChild>

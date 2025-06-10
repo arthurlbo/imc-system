@@ -1,9 +1,9 @@
-import { Text } from "@chakra-ui/react";
+import { AssessmentsTable } from "@/components/pages";
 
 export const metadata = {
     title: "Exames - IMC Web",
 };
 
-export default async function Assessment() {
-    return <Text>Hello world</Text>
+export default async function Assessments() {
+    return <AssessmentsTable />;
 }

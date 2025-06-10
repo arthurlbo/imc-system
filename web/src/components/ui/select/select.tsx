@@ -111,6 +111,7 @@ export const Select = ({
                             </ChakraSelect.IndicatorGroup>
                         </ChakraSelect.Control>
 
+                        {/* With Portal and ChakraSelect.Positioner was causing issues with the dropdown position, event with containerRef */}
                         <ChakraSelect.Content>
                             {collection.items.map((item) => (
                                 <ChakraSelect.Item key={item.value} item={item} color={customStyles.color}>

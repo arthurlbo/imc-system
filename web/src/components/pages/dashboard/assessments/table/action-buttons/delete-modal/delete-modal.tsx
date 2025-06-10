@@ -11,40 +11,39 @@ import { Button, CloseButton, Dialog, IconButton, Portal } from "@chakra-ui/reac
 import { toaster } from "@/components/ui";
 
 interface DeleteModalProps {
-    userId: string;
+    assessmentId: string;
 }
 
-const deleteRequest = async (userId: string) => {
-    const { data } = await api.delete(`/user/${userId}`);
+const deleteRequest = async (assessmentId: string) => {
+    const { data } = await api.delete(`/assessment/${assessmentId}`);
 
     return data;
 };
 
-export const DeleteModal = ({ userId }: DeleteModalProps) => {
+export const DeleteModal = ({ assessmentId }: DeleteModalProps) => {
     const router = useRouter();
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => deleteRequest(userId),
+        mutationFn: () => deleteRequest(assessmentId),
         onSuccess: () => {
             toaster.create({
-                title: "Usuário deletado com sucesso!",
-                description: "O usuário foi removido do sistema.",
+                title: "Exame deletado com sucesso!",
+                description: "O Exame foi removido do sistema.",
                 type: "success",
                 duration: 5000,
             });
 
             queryClient.invalidateQueries({
-                queryKey: ["users"],
+                queryKey: ["assessments"],
             });
 
             router.refresh();
         },
         onError: (error) => {
             toaster.create({
-                title: "Erro ao deletar usuário",
-                description:
-                    error.message || "Ocorreu um erro ao tentar deletar o usuário. Por favor, tente novamente.",
+                title: "Erro ao deletar Exame",
+                description: error.message || "Ocorreu um erro ao tentar deletar o Exame. Por favor, tente novamente.",
                 type: "error",
                 duration: 5000,
             });
@@ -77,8 +76,8 @@ export const DeleteModal = ({ userId }: DeleteModalProps) => {
                         </Dialog.Header>
                         <Dialog.Body>
                             <p>
-                                Você está prestes a deletar este usuário. Esta ação é irreversível e todos os dados
-                                associados a este usuário serão perdidos permanentemente.
+                                Você está prestes a deletar este exame. Esta ação é irreversível e todos os dados
+                                associados a este exame serão perdidos permanentemente.
                             </p>
                         </Dialog.Body>
 

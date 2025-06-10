@@ -21,6 +21,7 @@ import { userSchema, UserSchema } from "./schema";
 
 interface UserFormProps {
     userId?: string;
+    setOpen?: (open: boolean) => void;
 }
 
 const PROFILE_OPTIONS = [
@@ -44,7 +45,7 @@ const userRequest = async (postData: UserSchema, id?: string) => {
     return data.data;
 };
 
-export const UserForm = ({ userId }: UserFormProps) => {
+export const UserForm = ({ userId, setOpen }: UserFormProps) => {
     const isEditForm = Boolean(userId);
 
     const { user: loggedUser } = useGetLoggedUser();
@@ -81,6 +82,8 @@ export const UserForm = ({ userId }: UserFormProps) => {
             queryClient.invalidateQueries({ queryKey: ["user", userId] });
 
             router.refresh();
+
+            setOpen && setOpen(false);
         },
         onError: () => {
             toaster.create({
