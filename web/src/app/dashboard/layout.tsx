@@ -29,6 +29,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             align="start"
             overflowY="auto"
             gap={4}
+            px={4}
         >
             <DashboardHeader />
 
