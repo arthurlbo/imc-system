@@ -6,6 +6,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from "@/co
 import { User } from "./entity/user.entity";
 import { UserService } from "./user.service";
 import { createUserSchema } from "./schemas/create-user.schema";
+import { updateUserSchema } from "./schemas/update-user.schema";
 
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -55,7 +56,7 @@ export class UserController {
     };
 
     public updateUser = async (req: Request, res: Response) => {
-        const result = createUserSchema.safeParse(req.body);
+        const result = updateUserSchema.safeParse(req.body);
 
         if (!result.success) {
             throw new BadRequestException("Invalid user data", result.error.format());

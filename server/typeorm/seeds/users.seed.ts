@@ -21,14 +21,14 @@ async function seedUsers() {
             },
             {
                 name: "Professor",
-                user: "teacher1",
+                user: "professor",
                 password: hashedPassword,
                 profile: "teacher",
                 status: "active",
             },
             {
                 name: "Estudante",
-                user: "student1",
+                user: "estudante",
                 password: hashedPassword,
                 profile: "student",
                 status: "active",

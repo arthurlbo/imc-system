@@ -138,6 +138,8 @@ export class UserService {
         { password, ...rest }: UpdateUser,
         loggedUser: User,
     ): Promise<UserReturn> => {
+        let hashedPassword: string = "";
+
         const userToUpdate = await this.findOneUser(id, loggedUser);
 
         if (!userToUpdate) {
@@ -146,11 +148,13 @@ export class UserService {
             );
         }
 
-        const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync());
+        }
 
         await this.usersRepository.update(id, {
             ...rest,
-            password: hashedPassword,
+            password: password ? hashedPassword : undefined,
         });
 
         return this.findOneUser(id, loggedUser);
