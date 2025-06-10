@@ -19,34 +19,42 @@ npm install
 ```
 
 ### Copy .env
+
 ```bash
 cp .env.example .env
 ```
 
 ### Run migrations
+
 ```bash
 pnpm migrate:up
 ```
+
 or
 
 ```bash
 yarn migrate:up
 ```
+
 or
 
 ```bash
 npm run migrate:up
 
 ```
+
 ### Run seed script
+
 ```bash
 pnpm run:seeds
 ```
+
 or
 
 ```bash
 yarn run:seeds
 ```
+
 or
 
 ```bash
@@ -73,9 +81,15 @@ npm run dev
 
 ### 🔥 Your server started at http://localhost:3333
 
-## Structure
+## 🗃️ Collection
+
+[Imc System Insomnia Collection](https://github.com/arthurlbo/imc-system/tree/main/server/docs/insomnia)
+
+## 📁 Structure
 
 ```
+└── docs
+    ├── insomnia            # Insomnia API client collection
 └── src
     ├── commons               # Shared utilities and helper functions
     ├── constants             # Application-wide constant values
@@ -105,10 +119,10 @@ npm run dev
     ├── app.ts               # Express application configuration
     ├── main.ts              # Application entry point (server bootstrap)
     ├── routes.ts            # Main route aggregator
-    └── typeorm             # Database configuration
-        ├── migrations      # Database migration files
-        ├── seeds           # Data seed files
-        └── data-source.ts  # TypeORM data source configuration
+└── typeorm             # Database configuration
+    ├── migrations      # Database migration files
+    ├── seeds           # Data seed files
+    └── data-source.ts  # TypeORM data source configuration
 
 ```
 
