@@ -1,13 +1,13 @@
 "use client";
 
-import { Button, Flex, Skeleton, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Text } from "@chakra-ui/react";
 
-import { useGetUser } from "@/hooks";
+import { useGetLoggedUser } from "@/hooks";
 
 import { LogoutButton } from "./logout-button";
 
 export const DashboardHeader = () => {
-    const { user, isLoading } = useGetUser();
+    const { user, isLoading } = useGetLoggedUser();
 
     return (
         <Flex as="header" w="full" h="auto" p="4" bg="transparent" align="center" justify="space-between">

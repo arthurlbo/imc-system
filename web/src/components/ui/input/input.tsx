@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Icon, Input as ChakraInput, InputGroup, Button, Text, Field } from "@chakra-ui/react";
+import { Icon, Input as ChakraInput, InputGroup, Field, IconButton } from "@chakra-ui/react";
 
 import { IconEye, IconEyeClosed, TablerIcon } from "@tabler/icons-react";
 
@@ -16,6 +16,12 @@ interface InputProps {
     icon: TablerIcon;
     placeholder: string;
     passwordInput?: boolean;
+    customStyles?: {
+        borderColor?: string;
+        hoverBorderColor?: string;
+        color?: string;
+        hoverColor?: string;
+    };
 }
 
 /**
@@ -28,7 +34,21 @@ interface InputProps {
  * @param placeholder - Placeholder of the input.
  * @param passwordInput - If the input is a password input.
  */
-export const Input = ({ id, name, placeholder, passwordInput = false, label, icon, type = "text" }: InputProps) => {
+export const Input = ({
+    id,
+    name,
+    placeholder,
+    passwordInput = false,
+    label,
+    icon,
+    type = "text",
+    customStyles = {
+        borderColor: "primary",
+        hoverBorderColor: "tertiary",
+        color: "primary",
+        hoverColor: "secondary",
+    },
+}: InputProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const {
@@ -38,27 +58,28 @@ export const Input = ({ id, name, placeholder, passwordInput = false, label, ico
 
     return (
         <Field.Root invalid={!!errors[name]}>
-            <Field.Label color="primary">{label}</Field.Label>
+            <Field.Label color={customStyles.color}>{label}</Field.Label>
 
             <InputGroup
-                startElement={<Icon as={icon} h={5} w={5} _invalid={{ color: "red.500" }} color="primary" />}
+                startElement={<Icon as={icon} h={5} w={5} _invalid={{ color: "red.500" }} color={customStyles.color} />}
                 endElement={
                     passwordInput && (
-                        <Button
+                        <IconButton
                             variant="ghost"
                             rounded="lg"
-                            _hover={{ color: "secondary" }}
-                            _focusVisible={{ color: "secondary" }}
+                            _hover={{ color: customStyles.hoverColor }}
+                            _focusVisible={{ color: customStyles.hoverColor }}
                             transition="all 0.2s ease-in-out"
-                            color="primary"
+                            color={customStyles.color}
                             h="auto"
                             w="auto"
                             p={0}
                             bg="transparent"
+                            _icon={{ w: 5, h: 5 }}
                             onClick={() => setShowPassword((prevShowPassword) => !prevShowPassword)}
                         >
-                            {showPassword ? <Icon as={IconEye} h={5} w={5} /> : <Icon as={IconEyeClosed} h={5} w={5} />}
-                        </Button>
+                            {showPassword ? <IconEye /> : <IconEyeClosed />}
+                        </IconButton>
                     )
                 }
             >
@@ -69,12 +90,12 @@ export const Input = ({ id, name, placeholder, passwordInput = false, label, ico
                     w="full"
                     pl={12}
                     rounded="lg"
-                    borderColor="primary"
+                    borderColor={customStyles.borderColor}
                     placeholder={placeholder}
                     type={passwordInput ? (showPassword ? type : "password") : type}
-                    _hover={{ borderColor: "tertiary" }}
+                    _hover={{ borderColor: customStyles.hoverBorderColor }}
                     _focus={{
-                        borderColor: "tertiary",
+                        borderColor: customStyles.hoverBorderColor,
                         boxShadow: "none",
                         bg: "transparent",
                     }}

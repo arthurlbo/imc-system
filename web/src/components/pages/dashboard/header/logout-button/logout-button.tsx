@@ -29,7 +29,7 @@ export const LogoutButton = () => {
                 title: "Error ao realizar logout",
                 description: "Ocorreu um erro ao tentar realizar o logout. Por favor, tente novamente.",
                 closable: true,
-                duration: 9999,
+                duration: 5000,
                 type: "error",
             });
         },

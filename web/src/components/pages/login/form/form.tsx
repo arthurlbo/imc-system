@@ -46,7 +46,7 @@ export const LoginForm = () => {
                 description:
                     "Ocorreu um erro ao tentar realizar o login. Por favor, verifique suas credenciais e tente novamente.",
                 closable: true,
-                duration: 9999,
+                duration: 5000,
                 type: "error",
             });
         },

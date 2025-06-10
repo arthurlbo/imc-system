@@ -46,7 +46,7 @@ export const RegisterForm = () => {
                 title: "Error ao realizar o cadastro",
                 description: "Ocorreu um erro ao tentar realizar o cadastro. Por favor, tente novamente.",
                 closable: true,
-                duration: 9999,
+                duration: 5000,
                 type: "error",
             });
         },
